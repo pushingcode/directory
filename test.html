@@ -3,6 +3,13 @@
 <head>
 	<meta charset="UTF-8">
 	<title>A simple display directory develop in VUE</title>
+	<!--Import Google Icon Font-->
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	<!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- VUE JS -->
 	<script src="https://unpkg.com/vue/dist/vue.js"></script>
 	<style>
 		.modal-mask {
@@ -73,60 +80,74 @@
 	</style>
 </head>
 <body>
-	<h4>A simple display directory develop in VUE</h4>
-	<!-- template for the modal component -->
-	<script type="text/x-template" id="modal-template">
-	  <transition name="modal">
-	    <div class="modal-mask">
-	      <div class="modal-wrapper">
-	        <div class="modal-container">
+	<div class="container">
+		<h4>A simple display directory develop in VUE</h4>
+		<!-- template for the modal component -->
+		<script type="text/x-template" id="modal-template">
+		  <transition name="modal">
+		    <div class="modal-mask">
+		      <div class="modal-wrapper">
+		        <div class="modal-container">
 
-	          <div class="modal-header">
-	            <slot name="header">
-	              default header
-	            </slot>
-	          </div>
+		          <div class="modal-header">
+		            <slot name="header">
+		              default header
+		            </slot>
+		          </div>
 
-	          <div class="modal-body">
-	            <slot name="body">
-	              default body
-	            </slot>
-	          </div>
+		          <div class="modal-body">
+		            <slot name="body">
+		              default body
+		            </slot>
+		          </div>
 
-	          <div class="modal-footer">
-	            <slot name="footer">
-	              <small>@PushingCode</small>
-	              <button class="modal-default-button" @click="$emit('close')">
-	                Cerrar Directorio
-	              </button>
-	            </slot>
-	          </div>
-	        </div>
-	      </div>
-	    </div>
-	  </transition>
-	</script>
-
-	<!-- app -->
-	<div id="app">
-	  <button id="show-modal" @click="showModal = true">Show Modal</button>
-	  <!-- use the modal component, pass in the prop -->
-	  <modal v-if="showModal" @close="showModal = false">
-	    <!--
-	      you can use custom content here to overwrite
-	      default content
-	    -->
-	    <h3 slot="header">Directorio de Solicitantes</h3>
-	    <div slot="body">
-		    <div v-for="data in jsonData">
-		    	<h4>{{data.name}} <small>edad: {{data.age}}</small></h4>
-		    	<p>Discapacidad: {{data.dea}}</p> 
-		    	<p v-if="data.status">Testimonial: <a  v-bind:href="data.msj">Ver</a></p>
-		    	<p v-else>Solicitud: <a v-bind:href="data.msj">Ver</a></p>
+		          <div class="modal-footer">
+		            <slot name="footer">
+		              <small>@PushingCode</small>
+		              <button class="modal-default-button waves-effect waves-light btn" @click="$emit('close')">
+		                Cerrar Directorio
+		              </button>
+		            </slot>
+		          </div>
+		        </div>
+		      </div>
 		    </div>
-	    </div>
-	   </modal>
+		  </transition>
+		</script>
+
+		<!-- app -->
+		<div id="app">
+		  <a id="show-modal" @click="showModal = true" class="waves-effect waves-light btn"><i class="material-icons left">cloud</i>Ver Directorio</a>
+		  <!-- use the modal component, pass in the prop -->
+		  <modal v-if="showModal" @close="showModal = false">
+		    <!--
+		      you can use custom content here to overwrite
+		      default content
+		    -->
+		    <h3 slot="header">Directorio de Solicitantes</h3>
+		    <div slot="body">
+		    	<div class="col s12 m8 offset-m2 l6 offset-l3" v-for="data in jsonData">
+			        <div class="card-panel grey lighten-5 z-depth-1">
+			          <div class="row valign-wrapper">
+			            <div class="col s2">
+			              <img src="img/yuna.jpg" alt="" class="circle responsive-img">
+			            </div>
+			            <div class="col s10">
+			              <span class="black-text">
+			               <h5>{{data.name}} <small>edad: {{data.age}}</small></h5>
+					    	<p>Discapacidad: {{data.dea}}</p>
+					    	<p v-if="data.status">Testimonial: <a  v-bind:href="data.msj">Ver</a></p>
+					    	<p v-else>Solicitud: <a v-bind:href="data.msj">Ver</a></p>
+			              </span>
+			            </div>
+			          </div>
+			        </div>
+			    </div>
+		    </div>
+		   </modal>
+		</div>
 	</div>
+	
 	<script>
 		// register modal component
 		Vue.component('modal', {
@@ -147,19 +168,21 @@
 		  	loadJsonData(){
 		  		setTimeout(()=>{
 		  			this.jsonData = [
-			  			{"name":"Carlos Galvan","age":"35","dea":"discapacidad","status":true,"msj":"http://localhost"}, 
-			  			{"name":"Maria Urrutia","age":"27","dea":"discapacidad","status":false,"msj":"http://localhost"}, 
-			  			{"name":"Antonio Cerpa","age":"31","dea":"discapacidad","status":true,"msj":"http://localhost"}, 
-			  			{"name":"PetraGonzalez","age":"25","dea":"discapacidad","status":false,"msj":"http://localhost"},
-			  			{"name":"Juan Martinez","age":"35","dea":"discapacidad","status":true,"msj":"http://localhost"}, 
-			  			{"name":"Andrea Perez","age":"27","dea":"discapacidad","status":false,"msj":"http://localhost"}, 
-			  			{"name":"Tony Lugo","age":"31","dea":"discapacidad","status":true,"msj":"http://localhost"}, 
-			  			{"name":"Francisco Arocha","age":"25","dea":"discapacidad","status":false,"msj":"http://localhost"}
+			  			{"name":"Carlos Galvan","age":"35","dea":"Astigmatismo","status":true,"msj":"http://localhost"}, 
+			  			{"name":"Maria Urrutia","age":"27","dea":"Leucoma corneal","status":false,"msj":"http://localhost"}, 
+			  			{"name":"Antonio Cerpa","age":"31","dea":"Tetraplejia","status":true,"msj":"http://localhost"}, 
+			  			{"name":"PetraGonzalez","age":"25","dea":"Enfermedad de Fahr","status":false,"msj":"http://localhost"},
+			  			{"name":"Juan Martinez","age":"35","dea":"Mielitis Transversa","status":true,"msj":"http://localhost"}, 
+			  			{"name":"Andrea Perez","age":"27","dea":"Psicosis Orgánica","status":false,"msj":"http://localhost"}, 
+			  			{"name":"Tony Lugo","age":"31","dea":"Fenilcetonuria","status":true,"msj":"http://localhost"}, 
+			  			{"name":"Francisco Arocha","age":"25","dea":"Sordera","status":false,"msj":"http://localhost"}
 		  			]
 		  		}, 300)
 		  	}
 		  }
 		})
 	</script>
+	<!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>
