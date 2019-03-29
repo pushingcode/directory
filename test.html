@@ -4,13 +4,14 @@
 	<meta charset="UTF-8">
 	<title>A simple display directory develop in VUE</title>
 	<!--Import Google Icon Font-->
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 	<!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
     <!-- VUE JS -->
 	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<style>
 		.modal-mask {
 		  position: fixed;
@@ -117,7 +118,10 @@
 
 		<!-- app -->
 		<div id="app">
-		  <a id="show-modal" @click="showModal = true" class="waves-effect waves-light btn"><i class="material-icons left">cloud</i>Ver Directorio</a>
+		  <a :title="boton.title" id="show-modal" @click="showModal = boton.estado" :class="boton.color">
+			  <i class="material-icons left">{{boton.icono}}</i>
+			  {{boton.texto}}
+		  </a>
 		  <!-- use the modal component, pass in the prop -->
 		  <modal v-if="showModal" @close="showModal = false">
 		    <!--
@@ -126,25 +130,21 @@
 		    -->
 		    <h3 slot="header">Directorio de Solicitantes</h3>
 		    <div slot="body">
-		    	<div class="col s12 m8 offset-m2 l6 offset-l3" v-for="data in jsonData">
-			        <div class="card-panel grey lighten-5 z-depth-1">
-			          <div class="row valign-wrapper">
-			            <div class="col s2">
-			              <img src="img/yuna.jpg" alt="" class="circle responsive-img">
-			            </div>
-			            <div class="col s10">
-			              <span class="black-text">
-			               <h5>{{data.name}} <small>edad: {{data.age}}</small></h5>
-					    	<p>Discapacidad: {{data.dea}}</p>
-					    	<p v-if="data.status">Testimonial: <a  v-bind:href="data.msj">Ver</a></p>
-					    	<p v-else>Solicitud: <a v-bind:href="data.msj">Ver</a></p>
-			              </span>
-			            </div>
-			          </div>
-			        </div>
-			    </div>
+
+		    	 <ul class="collection">
+				    <li class="collection-item avatar" v-for="(data, index) in users">
+				      <img v-bind:src="data.avatar_urls['24']" :alt="data.name" class="circle">
+				      <span class="title">{{data.name}}</span>
+				      <p><a v-bind:href="data.link">Ver</a></p>
+				      <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+				    </li>
+
+				   
+				 </ul>
 		    </div>
 		   </modal>
+
+
 		</div>
 	</div>
 	
@@ -157,27 +157,56 @@
 		// start app
 		new Vue({
 		  el: '#app',
-		  data: {
-		    showModal: false,
-		    jsonData: []
+		  data () {
+		  	return {
+		  		showModal: false,
+		  		info: null,
+		  		boton: {
+		  			"icono":"block",
+		  			"texto":"Conectando",
+		  			"estado":false,
+		  			"color":"waves-effect red darken-1 btn",
+		  			"title":"Estableciendo Conexion"
+		  		},
+		  		recurso: 'http://fundaruedas.org.ve/wp-json/wp/v2/users'
+		  	}
 		  },
 		  mounted() {
-		  	this.loadJsonData();
+		  	axios
+		  		.get(this.recurso)
+		  		.then(response => {
+		  			(this.info = response)
+		  			if (this.info.status == 200) {
+		  				this.boton = {
+		  					"icono":"cloud_done",
+		  					"texto":"Ver Directorio",
+		  					"estado":true,
+		  					"color":"waves-effect blue darken-3 btn",
+		  					"title":"Conectado"
+		  				}
+		  			}
+		  			console.log(this.info.status)
+		  		})
+		  		.catch(error => {
+		  			this.boton = {
+		  				"icono":"announcement",
+	  					"texto":"No Conectado",
+	  					"estado":false,
+	  					"color":"waves-effect red darken-1 btn",
+	  					"title":"Verifique conexion"
+		  			}
+		  		});
 		  },
 		  methods: {
-		  	loadJsonData(){
-		  		setTimeout(()=>{
-		  			this.jsonData = [
-			  			{"name":"Carlos Galvan","age":"35","dea":"Astigmatismo","status":true,"msj":"http://localhost"}, 
-			  			{"name":"Maria Urrutia","age":"27","dea":"Leucoma corneal","status":false,"msj":"http://localhost"}, 
-			  			{"name":"Antonio Cerpa","age":"31","dea":"Tetraplejia","status":true,"msj":"http://localhost"}, 
-			  			{"name":"PetraGonzalez","age":"25","dea":"Enfermedad de Fahr","status":false,"msj":"http://localhost"},
-			  			{"name":"Juan Martinez","age":"35","dea":"Mielitis Transversa","status":true,"msj":"http://localhost"}, 
-			  			{"name":"Andrea Perez","age":"27","dea":"Psicosis Orgánica","status":false,"msj":"http://localhost"}, 
-			  			{"name":"Tony Lugo","age":"31","dea":"Fenilcetonuria","status":true,"msj":"http://localhost"}, 
-			  			{"name":"Francisco Arocha","age":"25","dea":"Sordera","status":false,"msj":"http://localhost"}
-		  			]
-		  		}, 300)
+		  	//loadJsonData(){}
+		  },
+		  computed:{
+		  	users(){
+		  		//return this.info.data;
+		  		for (let i = 0; i < this.info.data.length; i++) {
+		  			//return this.info.data[i].avatar_urls["24"];
+		  			return this.info.data;
+		  		}
 		  	}
 		  }
 		})
